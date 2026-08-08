@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environments
+.venv/
+venv/
+backend/.venv/
+
+# Environment Variables
+.env
+backend/.env
+
+# Python cache
+.pytest_cache/
+
+# Database
+backend/instance/
+*.db
+*.sqlite3
+
+# Datasets
+datasets/raw/
+datasets/processed/
+
+# Trained Models
+models/
+*.joblib
+*.pkl
+
+# Experiment Outputs
+experiments/
+
+# VS Code
+.vscode/
+
+# Node
+frontend/node_modules/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
