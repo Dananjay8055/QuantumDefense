@@ -10,3 +10,11 @@ class PacketInfo:
     dst_port: int
     protocol: str
     length: int
+
+    # TCP information
+    tcp_flags: int = 0
+    tcp_window: int = 0
+
+    # Header information
+    ip_header_length: int = 0
+    transport_header_length: int = 0
