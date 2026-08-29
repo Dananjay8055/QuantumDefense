@@ -22,10 +22,12 @@ class LiveDetector:
             columns=FEATURE_COLUMNS
         )
 
+        # Prediction: 0 = benign, 1 = attack
         prediction = int(
             self.model.predict(data)[0]
         )
 
+        # Get probabilities from the Random Forest
         probability = self.model.predict_proba(data)[0]
 
         return {

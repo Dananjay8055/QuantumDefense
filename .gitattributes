@@ -1,0 +1,13 @@
+﻿# Treat text-based project files as text
+*.txt text
+*.md text
+*.py text
+*.js text
+*.jsx text
+*.css text
+*.json text
+*.yml text
+*.yaml text
+
+# Normalize line endings for text files
+* text=auto

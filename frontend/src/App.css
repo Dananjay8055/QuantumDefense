@@ -1,66 +1,196 @@
-.dashboard {
-  min-height: 100vh;
-  padding: 40px;
+:root {
   font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+  background: #080b12;
+  color: #e8edf5;
 }
 
-header {
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #080b12;
+}
+
+.dashboard {
+  min-height: 100vh;
+  padding: 30px;
+  max-width: 1500px;
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
 }
 
-header h1 {
+.header h1 {
   margin: 0;
   font-size: 32px;
 }
 
-header p {
-  color: #94a3b8;
+.header p {
+  color: #8993a4;
+  margin-top: 8px;
 }
 
-.status-card {
-  display: flex;
-  gap: 40px;
+.status {
+  border: 1px solid #263142;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: #35d07f;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: #10151f;
+  border: 1px solid #222c3b;
+  border-radius: 10px;
   padding: 20px;
-  margin-bottom: 30px;
-  background: #1e293b;
-  border-radius: 10px;
 }
 
-.status-card div {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.card span {
+  display: block;
+  color: #8993a4;
+  font-size: 13px;
+  margin-bottom: 12px;
 }
 
-.online {
-  color: #22c55e;
+.card strong {
+  font-size: 24px;
 }
 
-.detections {
-  background: #1e293b;
+.danger {
+  color: #ff5c67;
+}
+
+.attack-panel {
+  background: #11151d;
+  border: 1px solid #7e2730;
+  border-radius: 12px;
   padding: 25px;
-  border-radius: 10px;
+  margin-bottom: 25px;
 }
 
-.section-header {
+.attack-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #29313e;
+  padding-bottom: 15px;
   margin-bottom: 20px;
 }
 
-.section-header h2 {
+.attack-header h2 {
+  color: #ff5c67;
   margin: 0;
 }
 
-.section-header span {
-  color: #94a3b8;
+.attack-header span {
+  background: #4d1e24;
+  color: #ff737b;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 12px;
 }
 
-.table-container {
-  overflow-x: auto;
+.attack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.attack-grid label {
+  color: #8993a4;
+  font-size: 12px;
+}
+
+.attack-grid p {
+  margin-top: 7px;
+  font-weight: bold;
+}
+
+.detection-result {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detection-result > div {
+  background: #0b0f16;
+  border: 1px solid #252e3d;
+  border-radius: 9px;
+  padding: 20px;
+}
+
+.detection-result h3 {
+  margin-top: 0;
+}
+
+.qaoa {
+  border-color: #454078 !important;
+}
+
+.qaoa h3 {
+  color: #aaa2ff;
+}
+
+.quantum-action {
+  color: #8fc7ff;
+}
+
+.response-banner {
+  margin-top: 20px;
+  padding: 18px;
+  text-align: center;
+  border-radius: 8px;
+  background: #132b24;
+  border: 1px solid #28694f;
+  color: #64e0a7;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.safe-panel {
+  background: #101d18;
+  border: 1px solid #28694f;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+.safe-panel h2 {
+  color: #64e0a7;
+}
+
+.table-section {
+  background: #10151f;
+  border: 1px solid #222c3b;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.table-section h2 {
+  margin-top: 0;
 }
 
 table {
@@ -70,61 +200,1186 @@ table {
 
 th,
 td {
-  padding: 14px;
   text-align: left;
-  border-bottom: 1px solid #334155;
+  padding: 14px 10px;
+  border-bottom: 1px solid #222c3b;
 }
 
 th {
-  color: #94a3b8;
+  color: #8993a4;
+  font-size: 12px;
+  text-transform: uppercase;
 }
 
-.benign {
-  color: #22c55e;
+td {
+  font-size: 13px;
+}
+
+.badge {
+  padding: 6px 9px;
+  border-radius: 5px;
+  font-size: 11px;
   font-weight: bold;
 }
 
-.attack {
-  color: #ef4444;
+.badge.attack {
+  background: #4d1e24;
+  color: #ff737b;
+}
+
+.badge.benign {
+  background: #163327;
+  color: #64e0a7;
+}
+
+@media (max-width: 900px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .attack-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detection-result {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard {
+    padding: 15px;
+  }
+
+  .header {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .attack-grid {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 11px;
+  }
+}
+/* ==========================================
+   ATTACK SIMULATOR
+   ========================================== */
+
+.simulator {
+  background: #10151f;
+  border: 1px solid #2b3443;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 25px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.section-title h2 {
+  margin: 0;
+}
+
+.section-title p {
+  color: #8993a4;
+  margin: 7px 0 0;
+  font-size: 13px;
+}
+
+.live-label {
+  background: #172a22;
+  color: #64e0a7;
+  padding: 7px 12px;
+  border-radius: 5px;
+  font-size: 11px;
   font-weight: bold;
 }
 
-.empty {
-  padding: 40px;
-  text-align: center;
-  color: #94a3b8;
+.threat-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 22px;
 }
+
+.threat-button {
+  border: 1px solid #303b4c;
+  background: #0b0f16;
+  color: #e8edf5;
+  padding: 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.threat-button:hover {
+  transform: translateY(-2px);
+}
+
+.threat-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.button-title {
+  display: block;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.button-probability {
+  display: block;
+  margin-top: 6px;
+  color: #8993a4;
+  font-size: 12px;
+}
+
+.button-loading {
+  display: block;
+  margin-top: 8px;
+  color: #aaa2ff;
+  font-size: 11px;
+}
+
+.threat-button.low:hover {
+  border-color: #35d07f;
+}
+
+.threat-button.medium:hover {
+  border-color: #e7c65a;
+}
+
+.threat-button.high:hover {
+  border-color: #ff9b54;
+}
+
+.threat-button.critical:hover {
+  border-color: #ff5c67;
+}
+
+
+/* ==========================================
+   RESULT CARDS
+   ========================================== */
+
+.result-card {
+  min-height: 260px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #202936;
+}
+
+.result-row span {
+  color: #8993a4;
+}
+
+.result-row strong {
+  text-align: right;
+}
+
+.qaoa-card {
+  border-color: #48427a !important;
+}
+
+.qaoa-card h3 {
+  color: #aaa2ff;
+}
+
+.probability-bar {
+  height: 8px;
+  background: #202733;
+  border-radius: 10px;
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.probability-bar div {
+  height: 100%;
+  background: #ff5c67;
+  border-radius: 10px;
+}
+
+.match {
+  margin-top: 18px;
+  padding: 10px;
+  background: #14251f;
+  border: 1px solid #28543f;
+  border-radius: 6px;
+  color: #64e0a7;
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   SEVERITY BADGES
+   ========================================== */
+
+.badge.low {
+  background: #173326;
+  color: #64e0a7;
+}
+
+.badge.medium {
+  background: #37331c;
+  color: #e7c65a;
+}
+
+.badge.high {
+  background: #3d291d;
+  color: #ff9b54;
+}
+
+.badge.critical {
+  background: #4d1e24;
+  color: #ff737b;
+}
+
+.response-text {
+  color: #aaa2ff;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   ERROR
+   ========================================== */
 
 .error {
-  padding: 15px;
+  background: #3a1c20;
+  border: 1px solid #75313a;
+  color: #ff737b;
+  padding: 12px 15px;
+  border-radius: 7px;
   margin-bottom: 20px;
-  background: #7f1d1d;
+}
+/* ==========================================
+   QAOA RESPONSE HISTORY
+   ========================================== */
+
+.response-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.history-card {
+  display: grid;
+  grid-template-columns: 160px 40px 1fr 100px 170px;
+  align-items: center;
+  gap: 15px;
+
+  padding: 15px;
+
+  background: #0b0f16;
+  border: 1px solid #2b3443;
   border-radius: 8px;
 }
 
-@media (max-width: 700px) {
-  .dashboard {
-    padding: 20px;
-  }
-
-  .status-card {
-    flex-direction: column;
-    gap: 20px;
-  }
+.history-severity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.attack-button {
-  padding: 12px 20px;
+.history-severity strong {
+  color: #dce2eb;
+}
+
+.history-arrow {
+  color: #7771d6;
+  font-size: 22px;
+  text-align: center;
+}
+
+.history-action span,
+.history-score span {
+  display: block;
+  color: #737e90;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.history-action strong {
+  color: #aaa2ff;
+  font-size: 14px;
+}
+
+.history-score strong {
+  color: #e8edf5;
+}
+
+.history-match {
+  color: #64e0a7;
+  font-size: 11px;
+}
+
+.empty-history {
+  margin-top: 20px;
+  padding: 25px;
+  text-align: center;
+  color: #737e90;
+  background: #0b0f16;
+  border: 1px dashed #303b4c;
+  border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+
+  .threat-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .history-card {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .history-arrow {
+    display: none;
+  }
+
+}
+
+/* ==========================================
+   BLOCKCHAIN SECURITY AUDIT
+========================================== */
+
+.blockchain-panel {
+  background: #10151f;
+  border: 1px solid #26384d;
+  border-radius: 12px;
+  padding: 25px;
   margin-bottom: 25px;
-  border: none;
-  border-radius: 8px;
-  background: #dc2626;
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.attack-button:hover {
-  background: #b91c1c;
+.blockchain-panel .section-title {
+  margin-bottom: 22px;
+}
+
+.chain-valid,
+.chain-invalid {
+  padding: 7px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.chain-valid {
+  background: #143428;
+  color: #64e0a7;
+  border: 1px solid #28694f;
+}
+
+.chain-invalid {
+  background: #4d1e24;
+  color: #ff737b;
+  border: 1px solid #75313a;
+}
+
+.blockchain-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.blockchain-stats > div {
+  background: #0b0f16;
+  border: 1px solid #252e3d;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.blockchain-stats span {
+  display: block;
+  color: #8993a4;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.blockchain-stats strong {
+  font-size: 22px;
+}
+
+.chain-text-valid {
+  color: #64e0a7;
+}
+
+.chain-text-invalid {
+  color: #ff737b;
+}
+
+.block-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.block-card {
+  display: grid;
+  grid-template-columns: 90px 1fr 2fr 80px;
+  gap: 18px;
+  align-items: center;
+
+  background: #0b0f16;
+  border: 1px solid #2b3443;
+  border-radius: 9px;
+  padding: 17px;
+}
+
+.block-number {
+  text-align: center;
+  border-right: 1px solid #29313e;
+  padding-right: 15px;
+}
+
+.block-number span {
+  display: block;
+  color: #737e90;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.block-number strong {
+  font-size: 18px;
+  color: #aaa2ff;
+}
+
+.block-content {
+  min-width: 0;
+}
+
+.block-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 5px 0;
+}
+
+.block-row span {
+  color: #737e90;
+  font-size: 11px;
+}
+
+.block-row strong {
+  color: #e8edf5;
+  font-size: 12px;
+  text-align: right;
+}
+
+.block-hashes {
+  min-width: 0;
+}
+
+.block-hashes > div {
+  margin-bottom: 8px;
+}
+
+.block-hashes > div:last-child {
+  margin-bottom: 0;
+}
+
+.block-hashes span {
+  display: block;
+  color: #737e90;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.block-hashes code {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  background: #111722;
+  border: 1px solid #202a38;
+  color: #8fc7ff;
+
+  padding: 6px 8px;
+  border-radius: 4px;
+
+  font-family: Consolas, monospace;
+  font-size: 10px;
+}
+
+.block-status {
+  text-align: center;
+  color: #64e0a7;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid #28694f;
+  background: #132b24;
+  border-radius: 5px;
+  padding: 7px 5px;
+}
+
+
+/* ==========================================
+   RESPONSE BANNER FIX
+========================================== */
+
+.response-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.response-banner span {
+  color: #64e0a7;
+}
+
+.response-banner strong {
+  color: #e8edf5;
+}
+
+
+/* ==========================================
+   RESPONSIVE BLOCKCHAIN
+========================================== */
+
+@media (max-width: 900px) {
+
+  .block-card {
+    grid-template-columns: 1fr;
+  }
+
+  .block-number {
+    text-align: left;
+    border-right: none;
+    border-bottom: 1px solid #29313e;
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+
+  .block-status {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .blockchain-stats {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ==========================================
+   POST-QUANTUM SECURITY
+   ========================================== */
+
+.pqc-panel {
+  background: #10151f;
+  border: 1px solid #30445d;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 25px;
+}
+
+.pqc-status {
+  background: #173326;
+  color: #64e0a7;
+  border: 1px solid #28543f;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.pqc-status-error {
+  background: #4d1e24;
+  color: #ff737b;
+  border: 1px solid #75313a;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.pqc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.pqc-card {
+  background: #0b0f16;
+  border: 1px solid #252e3d;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.pqc-card span {
+  display: block;
+  color: #8993a4;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.pqc-card strong {
+  font-size: 16px;
+  color: #dce2eb;
+}
+
+.pqc-success {
+  color: #64e0a7 !important;
+}
+
+.pqc-details {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.pqc-details > div {
+  background: #0b0f16;
+  border: 1px solid #202936;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.pqc-details span {
+  display: block;
+  color: #737e90;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.pqc-details strong {
+  color: #aaa2ff;
+  font-size: 13px;
+}
+
+.pqc-loading {
+  margin-top: 20px;
+  padding: 20px;
+  background: #0b0f16;
+  border: 1px dashed #303b4c;
+  border-radius: 8px;
+  color: #737e90;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+
+  .pqc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pqc-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .pqc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pqc-details {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ==========================================
+   SECURITY RESPONSE PIPELINE
+========================================== */
+
+.security-pipeline {
+  margin-top: 20px;
+  padding: 18px;
+  background: #0b0f16;
+  border: 1px solid #303b4c;
+  border-radius: 9px;
+}
+
+.pipeline-title {
+  color: #8993a4;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.pipeline-flow {
+  display: grid;
+  grid-template-columns: 1fr 30px 1fr 30px 1fr 30px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.pipeline-step {
+  min-height: 72px;
+  padding: 12px;
+  background: #10151f;
+  border: 1px solid #2b3443;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+}
+
+.pipeline-step .pipeline-label {
+  color: #737e90;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.pipeline-step strong {
+  font-size: 12px;
+}
+
+.ai-step {
+  border-color: #75313a;
+}
+
+.ai-step strong {
+  color: #ff737b;
+}
+
+.qaoa-step {
+  border-color: #48427a;
+}
+
+.qaoa-step strong {
+  color: #aaa2ff;
+}
+
+.pqc-step {
+  border-color: #28694f;
+}
+
+.pqc-step strong {
+  color: #64e0a7;
+}
+
+.blockchain-step {
+  border-color: #28694f;
+}
+
+.blockchain-step strong {
+  color: #64e0a7;
+}
+
+.pipeline-arrow {
+  color: #7771d6;
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .pipeline-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline-arrow {
+    transform: rotate(90deg);
+  }
+}
+/* ==========================================
+   RESPONSE EXPLANATION
+========================================== */
+
+.response-banner-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.mitigation-explanation {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #28694f;
+  text-align: left;
+}
+
+.mitigation-label {
+  display: block;
+  color: #737e90;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.mitigation-explanation strong {
+  display: block;
+  color: #64e0a7;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.mitigation-explanation p {
+  color: #aeb7c5;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+}
+/* ==========================================
+   MITIGATION EXECUTION
+========================================== */
+
+.mitigation-execution {
+  margin-top: 14px;
+  padding: 14px;
+  background: #0b0f16;
+  border: 1px solid #28694f;
+  border-radius: 7px;
+  text-align: left;
+}
+
+.execution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.execution-header span {
+  color: #737e90;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.execution-header strong {
+  color: #64e0a7;
+  font-size: 11px;
+  background: #173326;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+
+.mitigation-execution p {
+  margin: 8px 0 12px;
+  color: #aeb7c5;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.execution-flow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.execution-flow > div {
+  background: #10151f;
+  border: 1px solid #202936;
+  border-radius: 5px;
+  padding: 9px;
+}
+
+.execution-flow span {
+  display: block;
+  color: #737e90;
+  font-size: 9px;
+  margin-bottom: 4px;
+}
+
+.execution-flow strong {
+  color: #dce2eb;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .execution-flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================
+   BLOCKCHAIN INTEGRITY TEST
+========================================== */
+
+.blockchain-integrity-test {
+  margin-top: 16px;
+  padding: 18px;
+  background: #0a1019;
+  border: 1px solid #24324a;
+  border-radius: 9px;
+}
+
+.integrity-test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.integrity-test-copy {
+  min-width: 0;
+}
+
+.integrity-test-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.integrity-test-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border: 1px solid #28694f;
+  border-radius: 50%;
+  background: #132b24;
+  color: #64e0a7;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.integrity-test-title-row h3 {
+  margin: 0 0 5px;
+  color: #e8edf5;
+  font-size: 14px;
+}
+
+.integrity-test-title-row p {
+  margin: 0;
+  color: #737e90;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.tamper-test-button {
+  padding: 9px 14px;
+  border: 1px solid #00d68f;
+  border-radius: 6px;
+  background: #073326;
+  color: #00e6a0;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, border-color 0.15s;
+}
+
+.tamper-test-button:hover:not(:disabled) {
+  background: #0b4433;
+  transform: translateY(-1px);
+}
+
+.tamper-test-button:disabled {
+  background: #123126;
+  color: #5da88c;
+  border-color: #28694f;
+  cursor: wait;
+  opacity: 0.8;
+}
+
+.blockchain-test-results {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.blockchain-test-result {
+  min-height: 105px;
+  padding: 13px;
+  background: #0b0f16;
+  border: 1px solid #252e3d;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+}
+
+.blockchain-test-result span {
+  color: #737e90;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.blockchain-test-result strong {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.blockchain-test-result small {
+  color: #667183;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.blockchain-test-result.test-valid {
+  border-color: #28694f;
+}
+
+.blockchain-test-result.test-valid strong {
+  color: #64e0a7;
+}
+
+.blockchain-test-result.test-invalid {
+  border-color: #75313a;
+}
+
+.blockchain-test-result.test-invalid strong {
+  color: #ff737b;
+}
+
+
+/* ==========================================
+   EVENT PQC VERIFICATION
+========================================== */
+
+.event-pqc {
+  margin-top: 20px;
+  padding: 18px;
+  background: #0b0f16;
+  border: 1px solid #28694f;
+  border-radius: 9px;
+}
+
+.event-pqc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #202936;
+}
+
+.event-pqc-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #737e90;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.event-pqc-header h3 {
+  margin: 0;
+  color: #e8edf5;
+  font-size: 15px;
+}
+
+.event-pqc-verified,
+.event-pqc-failed {
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.event-pqc-verified {
+  background: #173326;
+  border: 1px solid #28694f;
+  color: #64e0a7;
+}
+
+.event-pqc-failed {
+  background: #4d1e24;
+  border: 1px solid #75313a;
+  color: #ff737b;
+}
+
+.event-pqc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.event-pqc-grid > div {
+  padding: 11px;
+  background: #10151f;
+  border: 1px solid #202936;
+  border-radius: 6px;
+}
+
+.event-pqc-grid span {
+  display: block;
+  margin-bottom: 5px;
+  color: #737e90;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.event-pqc-grid strong {
+  display: block;
+  color: #dce2eb;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.event-pqc-grid > div:nth-child(2) strong {
+  color: #64e0a7;
+}
+
+@media (max-width: 900px) {
+  .blockchain-test-results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .event-pqc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .blockchain-integrity-test {
+    padding: 14px;
+  }
+
+  .integrity-test-header {
+    align-items: stretch;
+  }
+
+  .tamper-test-button {
+    width: 100%;
+  }
+
+  .blockchain-test-results {
+    grid-template-columns: 1fr;
+  }
+
+  .event-pqc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-pqc-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

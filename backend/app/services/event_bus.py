@@ -7,7 +7,7 @@ class EventBus:
         self.events.append(event)
 
         if len(self.events) > 1000:
-            self.events.pop(0)
+            self.events = self.events[-1000:]
 
     def get_events(self, limit=100):
         return self.events[-limit:]

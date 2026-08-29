@@ -6,3 +6,5 @@ from . import health
 from . import network
 from . import dashboard
 from . import demo
+from . import blockchain
+from . import pqc

@@ -34,7 +34,7 @@ class LiveDetectionService:
         if reverse_key in self.last_seen:
             flow_key = reverse_key
 
-        flow = self.flows.add_packet(packet)
+        self.flows.add_packet(packet)
 
         self.last_seen[flow_key] = time.time()
 
@@ -57,16 +57,21 @@ class LiveDetectionService:
 
             destination_port = flow_key[3]
 
-            result = self.detector.predict(
+            # Run AI detection
+            detection_result = self.detector.predict(
                 flow,
                 destination_port
             )
 
-            results.append({
+            # Build complete event
+            event = {
                 "flow": flow_key,
-                "result": result
-            })
+                "result": detection_result
+            }
 
+            results.append(event)
+
+            # Remove completed flow
             del self.last_seen[flow_key]
             del self.flows.flows[flow_key]
 

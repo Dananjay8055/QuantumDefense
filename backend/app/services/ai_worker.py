@@ -26,8 +26,8 @@ class AIWorker:
                 finally:
                     packet_queue.task_done()
 
-            except Exception:
-                pass
+            except Exception as e:
+                print("AI Worker error:", e)
 
             results = self.service.process_expired_flows()
 
