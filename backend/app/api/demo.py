@@ -6,10 +6,9 @@ from app.services.event_bus import event_bus
 from app.services.qaoa_service import QAOAService
 from app.services.response_service import response_service
 from app.modules.blockchain.audit_chain import audit_blockchain
-from app.services.pqc_service import PQCService
+from app.services.pqc_service import pqc_service
 
 qaoa_service = QAOAService()
-pqc_service = PQCService()
 
 # ============================================================
 # DEMO ATTACK PROFILES

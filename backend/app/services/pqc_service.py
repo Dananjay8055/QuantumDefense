@@ -20,37 +20,17 @@ class PQCService:
 
         start = time.perf_counter()
 
-        # --------------------------------------------------
-        # Create ML-KEM-768 instance
-        # --------------------------------------------------
-
         with oqs.KeyEncapsulation(self.algorithm) as kem:
 
-            # --------------------------------------------------
-            # Generate public/private key pair
-            # --------------------------------------------------
-
             public_key = kem.generate_keypair()
-
-            # --------------------------------------------------
-            # Encapsulate a shared secret
-            # --------------------------------------------------
 
             ciphertext, encapsulated_secret = (
                 kem.encap_secret(public_key)
             )
 
-            # --------------------------------------------------
-            # Decapsulate the shared secret
-            # --------------------------------------------------
-
             decapsulated_secret = (
                 kem.decap_secret(ciphertext)
             )
-
-            # --------------------------------------------------
-            # Verify both parties derived the same secret
-            # --------------------------------------------------
 
             shared_secret_match = (
                 encapsulated_secret ==
@@ -99,3 +79,6 @@ class PQCService:
                     3
                 )
             }
+
+
+pqc_service = PQCService()

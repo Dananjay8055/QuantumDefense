@@ -30,16 +30,11 @@ class AuditBlockchain:
             "previous_hash": "0"
         }
 
-        genesis["hash"] = self._calculate_hash(
-            genesis
-        )
+        genesis["hash"] = self._calculate_hash(genesis)
 
         self.chain.append(genesis)
 
-    def add_security_event(
-        self,
-        event
-    ):
+    def add_security_event(self, event):
 
         previous_block = self.chain[-1]
 
@@ -50,17 +45,24 @@ class AuditBlockchain:
             "previous_hash": previous_block["hash"]
         }
 
-        block["hash"] = self._calculate_hash(
-            block
-        )
+        block["hash"] = self._calculate_hash(block)
 
         self.chain.append(block)
 
         return block
 
     def get_chain(self):
-
         return self.chain
+
+    def calculate_block_hash(self, block):
+        """
+        Recalculate a block's hash without modifying the block.
+        """
+        block_copy = block.copy()
+
+        block_copy.pop("hash", None)
+
+        return self._calculate_hash(block_copy)
 
     def verify_chain(self):
 
@@ -76,12 +78,8 @@ class AuditBlockchain:
             # Recalculate current block hash.
             stored_hash = current["hash"]
 
-            block_copy = current.copy()
-
-            del block_copy["hash"]
-
-            calculated_hash = self._calculate_hash(
-                block_copy
+            calculated_hash = self.calculate_block_hash(
+                current
             )
 
             if stored_hash != calculated_hash:

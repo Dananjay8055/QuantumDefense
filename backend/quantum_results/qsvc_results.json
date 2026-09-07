@@ -1,0 +1,62 @@
+{
+    "algorithm": "QSVC",
+    "status": "COMPLETED",
+    "dataset": "CICIDS2017",
+    "dataset_path": "../datasets/processed/cicids2017_clean.csv",
+    "sample_size": 600,
+    "training_samples": 450,
+    "testing_samples": 150,
+    "qubits": 4,
+    "feature_map": "ZZFeatureMap",
+    "entanglement": "linear",
+    "kernel": "FidelityQuantumKernel",
+    "classifier": "QSVC",
+    "features": [
+        "Average Packet Size",
+        "Packet Length Variance",
+        "Subflow Bwd Bytes",
+        "Total Length of Fwd Packets"
+    ],
+    "test_size": 0.25,
+    "random_state": 42,
+    "experiments": [
+        {
+            "reps": 1,
+            "accuracy": 0.886667,
+            "precision": 0.9,
+            "recall": 0.36,
+            "f1": 0.514286,
+            "confusion_matrix": [
+                [
+                    124,
+                    1
+                ],
+                [
+                    16,
+                    9
+                ]
+            ],
+            "training_time_seconds": 655.0327,
+            "prediction_time_seconds": 438.2108
+        },
+        {
+            "reps": 2,
+            "accuracy": 0.886667,
+            "precision": 0.833333,
+            "recall": 0.4,
+            "f1": 0.540541,
+            "confusion_matrix": [
+                [
+                    123,
+                    2
+                ],
+                [
+                    15,
+                    10
+                ]
+            ],
+            "training_time_seconds": 986.6485,
+            "prediction_time_seconds": 658.058
+        }
+    ]
+}

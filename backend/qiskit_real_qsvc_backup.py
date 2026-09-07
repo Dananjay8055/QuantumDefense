@@ -1,7 +1,3 @@
-import json
-import time
-from pathlib import Path
-
 import pandas as pd
 import numpy as np
 
@@ -36,10 +32,8 @@ QUANTUM_FEATURES = [
     "Total Length of Fwd Packets"
 ]
 
+# We are testing ONLY this parameter
 REPETITIONS = [1, 2]
-
-RESULTS_DIR = Path("quantum_results")
-RESULTS_FILE = RESULTS_DIR / "qsvc_results.json"
 
 
 # ============================================================
@@ -104,15 +98,11 @@ print("Testing shape :", X_test.shape)
 
 
 # ============================================================
-# RESULTS
+# TEST DIFFERENT FEATURE-MAP DEPTHS
 # ============================================================
 
 results = {}
 
-
-# ============================================================
-# QSVC EXPERIMENT
-# ============================================================
 
 for reps in REPETITIONS:
 
@@ -151,14 +141,10 @@ for reps in REPETITIONS:
 
     print("\nTraining QSVC...")
 
-    start_time = time.time()
-
     qsvc.fit(
         X_train,
         y_train
     )
-
-    training_time = time.time() - start_time
 
     print("Training complete.")
 
@@ -166,11 +152,7 @@ for reps in REPETITIONS:
     # PREDICTION
     # --------------------------------------------------------
 
-    start_time = time.time()
-
     predictions = qsvc.predict(X_test)
-
-    prediction_time = time.time() - start_time
 
     # --------------------------------------------------------
     # METRICS
@@ -204,25 +186,12 @@ for reps in REPETITIONS:
         predictions
     )
 
-    # --------------------------------------------------------
-    # STORE RESULTS
-    # --------------------------------------------------------
-
-    results[str(reps)] = {
-        "reps": reps,
-        "accuracy": round(float(accuracy), 6),
-        "precision": round(float(precision), 6),
-        "recall": round(float(recall), 6),
-        "f1": round(float(f1), 6),
-        "confusion_matrix": cm.tolist(),
-        "training_time_seconds": round(
-            float(training_time),
-            4
-        ),
-        "prediction_time_seconds": round(
-            float(prediction_time),
-            4
-        )
+    results[reps] = {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "confusion_matrix": cm
     }
 
     # --------------------------------------------------------
@@ -237,18 +206,6 @@ for reps in REPETITIONS:
 
     print("\nConfusion Matrix:")
     print(cm)
-
-    print(
-        "\nTraining time:",
-        round(training_time, 4),
-        "seconds"
-    )
-
-    print(
-        "Prediction time:",
-        round(prediction_time, 4),
-        "seconds"
-    )
 
 
 # ============================================================
@@ -281,51 +238,3 @@ for reps, result in results.items():
     )
 
 print("=" * 70)
-
-
-# ============================================================
-# SAVE RESULTS FOR FRONTEND
-# ============================================================
-
-RESULTS_DIR.mkdir(
-    parents=True,
-    exist_ok=True
-)
-
-output = {
-    "algorithm": "QSVC",
-    "status": "COMPLETED",
-    "dataset": "CICIDS2017",
-    "dataset_path": DATASET,
-    "sample_size": SAMPLE_SIZE,
-    "training_samples": len(train_df),
-    "testing_samples": len(test_df),
-    "qubits": 4,
-    "feature_map": "ZZFeatureMap",
-    "entanglement": "linear",
-    "kernel": "FidelityQuantumKernel",
-    "classifier": "QSVC",
-    "features": QUANTUM_FEATURES,
-    "test_size": TEST_SIZE,
-    "random_state": 42,
-    "experiments": list(results.values())
-}
-
-with open(
-    RESULTS_FILE,
-    "w",
-    encoding="utf-8"
-) as file:
-
-    json.dump(
-        output,
-        file,
-        indent=4
-    )
-
-
-print("\nQSVC results saved to:")
-
-print(
-    RESULTS_FILE.resolve()
-)

@@ -8,3 +8,4 @@ from . import dashboard
 from . import demo
 from . import blockchain
 from . import pqc
+from . import quantum

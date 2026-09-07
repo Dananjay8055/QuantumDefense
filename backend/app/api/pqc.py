@@ -1,16 +1,14 @@
 from flask import jsonify
 
 from . import api
-from app.services.pqc_service import PQCService
-
-
-pqc_service = PQCService()
+from app.services.pqc_service import pqc_service
 
 
 @api.route("/api/pqc/status", methods=["GET"])
 def pqc_status():
 
     try:
+
         result = pqc_service.key_exchange()
 
         return jsonify({
