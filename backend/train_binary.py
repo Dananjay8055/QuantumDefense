@@ -49,7 +49,7 @@ metrics = Evaluator.evaluate(
 
 ModelRegistry.save(
     model,
-    "binary_detector.joblib"
+    "random_forest.joblib"
 )
 
 run_dir = ExperimentLogger.save_metrics(
