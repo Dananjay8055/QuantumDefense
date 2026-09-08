@@ -1,4 +1,5 @@
 import React from "react";
+import ThemeToggle from "./ThemeToggle";
 import { sound } from "../utils/audio";
 
 export default function TacticalHUDHeader({
@@ -12,123 +13,127 @@ export default function TacticalHUDHeader({
   blockCount,
   qaoaCount,
   muted,
-  onToggleMute
+  onToggleMute,
+  theme,
+  onToggleTheme
 }) {
   const views = [
-    { id: "radar", label: "TACTICAL SOC", tag: "RADAR // MATRIX" },
-    { id: "quantum", label: "QUANTUM LAB", tag: "QSVC // QAOA" },
-    { id: "ledger", label: "LEDGER FORGE", tag: "BLOCKCHAIN // AUDIT" },
-    { id: "telemetry", label: "PACKET TERMINAL", tag: "FLOW STREAM" }
+    { id: "highway", label: "DEFENSE WAVEGUIDE", tag: "PIPELINE TOPOLOGY", icon: "⏣" },
+    { id: "quantum", label: "QUANTUM LAB", tag: "CIRCUITS // KERNEL", icon: "⚛" },
+    { id: "ledger", label: "AUDIT LEDGER", tag: "CRYPTOGRAPHIC FORENSICS", icon: "⛓" },
+    { id: "telemetry", label: "PACKET TERMINAL", tag: "LIVE INGRESS STREAM", icon: "⌨" }
   ];
 
   return (
-    <header className="tactical-header">
+    <header className="command-header">
       {/* Upper Status Ribbon */}
-      <div className="telemetry-ribbon">
-        <div className="telemetry-ribbon__left">
-          <div className={`status-beacon ${online ? "status-beacon--active" : "status-beacon--alert"}`}>
-            <span className="beacon-dot" />
-            <span className="beacon-text">{online ? "Q-NET ONLINE" : "NET DEGRADED"}</span>
+      <div className="command-ribbon">
+        <div className="command-ribbon__left">
+          <div className={`status-badge ${online ? "status-badge--online" : "status-badge--offline"}`}>
+            <span className="status-dot" />
+            <span className="status-label">{online ? "NETWORK ONLINE" : "OFFLINE FALLBACK ACTIVE"}</span>
           </div>
-          <span className="hud-sep">│</span>
-          <span className="hud-crypto-tag">NIST PQC: ML-KEM-768 [LEVEL 3]</span>
-          <span className="hud-sep">│</span>
-          <span className="hud-qaoa-tag">OPTIMIZER: QAOA 4-QUBIT</span>
-          <span className="hud-sep">│</span>
-          <span className="hud-coherence">COHERENCE: 99.84%</span>
+          <span className="ribbon-divider">/</span>
+          <span className="ribbon-spec">NIST PQC: ML-KEM-768</span>
+          <span className="ribbon-divider">/</span>
+          <span className="ribbon-spec">OPTIMIZER: QAOA 4-QUBIT</span>
+          <span className="ribbon-divider">/</span>
+          <span className="ribbon-spec">COHERENCE: 99.8%</span>
         </div>
 
-        <div className="telemetry-ribbon__right">
+        <div className="command-ribbon__right">
+          <ThemeToggle theme={theme} onToggleTheme={onToggleTheme} />
+
           <button
             type="button"
-            className="hud-action-btn"
+            className="ribbon-btn"
             onClick={() => {
               onToggleMute();
               sound.playClick();
             }}
-            title={muted ? "Unmute tactical audio" : "Mute tactical audio"}
+            title={muted ? "Unmute audio cues" : "Mute audio cues"}
           >
-            {muted ? "🔇 MUTED" : "🔊 AUDIO ON"}
+            {muted ? "🔇 Muted" : "🔊 Audio"}
           </button>
+
           <button
             type="button"
-            className={`hud-action-btn ${refreshing ? "spinning" : ""}`}
+            className={`ribbon-btn ${refreshing ? "ribbon-btn--spinning" : ""}`}
             onClick={() => {
               sound.playClick();
               onRefresh();
             }}
             disabled={refreshing}
           >
-            {refreshing ? "⟳ RESYNCING…" : "⟳ RESYNC HUD"}
+            {refreshing ? "⟳ Syncing…" : "⟳ Refresh"}
           </button>
         </div>
       </div>
 
-      {/* Main Bridge Title & Integrated Telemetry Conduit */}
-      <div className="tactical-bridge">
-        <div className="tactical-brand">
-          <div className="brand-logo-mark">
-            <svg viewBox="0 0 40 40" className="quantum-hex">
-              <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="none" stroke="#00f0ff" strokeWidth="1.5" />
-              <circle cx="20" cy="20" r="6" fill="#8a2be2" opacity="0.8" />
-              <line x1="20" y1="2" x2="20" y2="38" stroke="#00f0ff" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="2" y1="20" x2="38" y2="20" stroke="#00f0ff" strokeWidth="1" strokeDasharray="3 3" />
-            </svg>
-          </div>
-          <div className="brand-titles">
-            <div className="brand-eyebrow">AUTONOMOUS QUANTUM-RESISTANT CYBER DEFENCE NETWORK</div>
+      {/* Main Command Bar & Horizon Telemetry Ticker (Zero Cards) */}
+      <div className="command-bar">
+        <div className="command-brand">
+          <div className="brand-badge">QD</div>
+          <div className="brand-info">
             <h1 className="brand-title">
-              QUANTUM<span>DEFENSE</span> <small>COMMAND BRIDGE v2.4</small>
+              QUANTUM<span>DEFENSE</span>
             </h1>
+            <p className="brand-subtitle">Autonomous Quantum-Resistant Cyber Defence Platform</p>
           </div>
         </div>
 
-        {/* Continuous Telemetry Matrix Display */}
-        <div className="telemetry-matrix">
-          <div className="telemetry-cell">
-            <span className="cell-label">LIVE OBSERVED FLOWS</span>
-            <span className="cell-value cell-value--cyan">{liveCount}</span>
-            <span className="cell-sub">real capture stream</span>
+        {/* Seamless Horizon Telemetry Ticker */}
+        <div className="horizon-telemetry-ticker">
+          <div className="ticker-item">
+            <span className="ticker-label">OBSERVED FLOWS</span>
+            <span className="ticker-value text-primary mono">{liveCount}</span>
+            <span className="ticker-sub">Real Telemetry</span>
           </div>
-          <div className="telemetry-cell">
-            <span className="cell-label">AI DETECTED THREATS</span>
-            <span className={`cell-value ${attackCount > 0 ? "cell-value--alert" : "cell-value--green"}`}>
+          <span className="ticker-slash">/</span>
+
+          <div className="ticker-item">
+            <span className="ticker-label">THREATS INTERCEPTED</span>
+            <span className={`ticker-value mono ${attackCount > 0 ? "text-crimson font-bold" : "text-emerald"}`}>
               {attackCount}
             </span>
-            <span className="cell-sub">{attackCount > 0 ? "INTERCEPTION ACTIVE" : "PERIMETER SECURE"}</span>
+            <span className="ticker-sub">{attackCount > 0 ? "Interception Active" : "Perimeter Clear"}</span>
           </div>
-          <div className="telemetry-cell">
-            <span className="cell-label">QAOA OPTIMIZATIONS</span>
-            <span className="cell-value cell-value--purple">{qaoaCount}</span>
-            <span className="cell-sub">quantum state solutions</span>
+          <span className="ticker-slash">/</span>
+
+          <div className="ticker-item">
+            <span className="ticker-label">QAOA OPTIMIZATIONS</span>
+            <span className="ticker-value text-purple mono">{qaoaCount}</span>
+            <span className="ticker-sub">Quantum Solutions</span>
           </div>
-          <div className="telemetry-cell">
-            <span className="cell-label">LEDGER HEIGHT</span>
-            <span className="cell-value cell-value--emerald">{blockCount}</span>
-            <span className="cell-sub">tamper-proof blocks</span>
+          <span className="ticker-slash">/</span>
+
+          <div className="ticker-item">
+            <span className="ticker-label">LEDGER HEIGHT</span>
+            <span className="ticker-value text-amber mono">{blockCount}</span>
+            <span className="ticker-sub">Validated Blocks</span>
           </div>
         </div>
       </div>
 
-      {/* Cybernetic Viewport Navigation Tabs */}
-      <nav className="tactical-nav">
+      {/* Navigation Workspaces Switcher */}
+      <nav className="command-nav">
         {views.map((v) => {
           const active = activeView === v.id;
           return (
             <button
               key={v.id}
               type="button"
-              className={`tactical-tab ${active ? "tactical-tab--active" : ""}`}
+              className={`nav-tab ${active ? "nav-tab--active" : ""}`}
               onClick={() => {
                 sound.playClick();
                 onSelectView(v.id);
               }}
             >
-              <span className="tab-corner tab-corner--tl" />
-              <span className="tab-corner tab-corner--br" />
-              <span className="tab-label">{v.label}</span>
-              <span className="tab-tag">{v.tag}</span>
-              {active && <span className="tab-glow-indicator" />}
+              <span className="nav-tab__icon">{v.icon}</span>
+              <div className="nav-tab__text">
+                <span className="nav-tab__label">{v.label}</span>
+                <span className="nav-tab__tag">{v.tag}</span>
+              </div>
             </button>
           );
         })}

@@ -25,180 +25,161 @@ export default function BlockchainStream({
   };
 
   return (
-    <div className="blockchain-forge-station">
-      {/* Station Header */}
-      <div className="hud-panel-title">
-        <div className="title-left">
-          <span className="title-icon">⛓</span>
-          <h3>DISTRIBUTED POST-QUANTUM AUDIT LEDGER</h3>
+    <div className="blockchain-filmstrip-station">
+      <div className="station-horizon-bar">
+        <div className="horizon-left">
+          <span className="horizon-icon">⛓</span>
+          <div>
+            <h3 className="horizon-title">DISTRIBUTED CRYPTOGRAPHIC AUDIT TRACK</h3>
+            <p className="horizon-sub">SHA-256 Merkle Ledger with Post-Quantum Security Logging & Automated Self-Healing</p>
+          </div>
         </div>
-        <div className="chain-status-indicator">
-          <span className={`status-pill ${chainValid ? "status-pill--valid" : "status-pill--corrupt"}`}>
-            {chainValid ? "CHAIN INTEGRITY: VALID (SHA-256)" : "CHAIN INTEGRITY: COMPROMISED"}
+
+        <div className="horizon-right">
+          <span className={`status-pill ${chainValid ? "status-pill--active" : "status-pill--alert"}`}>
+            {chainValid ? "LEDGER INTEGRITY: VERIFIED" : "CHAIN INTEGRITY COMPROMISED"}
           </span>
-          <span className="block-height-tag mono">HEIGHT: {chain.length} BLOCKS</span>
+          <span className="height-pill mono">HEIGHT: {chain.length} BLOCKS</span>
         </div>
       </div>
 
-      {/* Forensic Tamper Challenge Bench */}
-      <div className="tamper-forensic-bench">
-        <div className="bench-header">
-          <div className="bench-title">
-            <span className="bench-tag">CRYPTOGRAPHIC INTEGRITY & SELF-HEALING SUITE</span>
+      {/* Forensic Tamper Challenge Strip (Zero Cards) */}
+      <div className="tamper-forensic-strip">
+        <div className="forensic-top-rail">
+          <div>
+            <span className="strip-badge">CRYPTOGRAPHIC TAMPER DETECTION TESTBED</span>
+            <h4>Live Byte Corruption & Automated Ledger Recovery</h4>
             <p>
-              Simulates unauthorized byte modification on block #1, validates SHA-256 hash avalanche failure,
-              and demonstrates automated state recovery.
+              Simulates unauthorized modification of block #1, validates SHA-256 hash mismatch detection, and restores chain state.
             </p>
           </div>
+
           <button
             type="button"
-            className={`tamper-actuator-btn ${tamperRunning ? "tamper-actuator-btn--running" : ""}`}
+            className={`linear-tamper-btn ${tamperRunning ? "linear-tamper-btn--running" : ""}`}
             onClick={handleTamperClick}
             disabled={tamperRunning || chain.length < 2}
           >
-            {tamperRunning ? "INJECTING BYTE TAMPER & RE-HASHING…" : "TEST LEDGER TAMPER DETECTION ⚡"}
+            <span className="btn-icon">⚡</span>
+            <span>{tamperRunning ? "VALIDATING CORRUPTION & RESTORING…" : "TEST LEDGER TAMPER DETECTION"}</span>
           </button>
         </div>
 
-        {/* Dynamic Forensic Stages */}
+        {/* Results Progression Ribbon */}
         {tamper && (
-          <div className="forensic-trace-deck">
-            <div className="forensic-step-ribbon">
-              <div className="forensic-step">
-                <span className="step-num">01</span>
-                <span className="step-name">ORIGINAL STATE</span>
-                <span className="step-flag text-emerald mono">
-                  {tamper.original_chain_valid ? "VALID" : "INVALID"}
-                </span>
+          <div className="forensic-progression-ribbon">
+            <div className="progression-steps-line mono">
+              <div className="step-cell">
+                <span className="step-tag">01. PRE-CHECK</span>
+                <span className="step-val text-emerald">{tamper.original_chain_valid ? "VALID STATE" : "INVALID"}</span>
               </div>
-              <span className="forensic-arrow">▶</span>
-
-              <div className="forensic-step forensic-step--tampered">
-                <span className="step-num">02</span>
-                <span className="step-name">PAYLOAD MODIFIED</span>
-                <span className="step-flag text-crimson mono">
-                  {tamper.tampering_detected ? "TAMPER DETECTED" : "UNNOTICED"}
-                </span>
+              <span className="step-sep">→</span>
+              <div className="step-cell">
+                <span className="step-tag">02. MODIFICATION</span>
+                <span className="step-val text-crimson">{tamper.tampering_detected ? "TAMPER DETECTED" : "MISSED"}</span>
               </div>
-              <span className="forensic-arrow">▶</span>
-
-              <div className="forensic-step forensic-step--hash">
-                <span className="step-num">03</span>
-                <span className="step-name">HASH MISMATCH</span>
-                <span className="step-flag text-amber mono">
-                  {tamper.hash_mismatch_detected ? "AVALANCHE MISMATCH" : "MATCH"}
-                </span>
+              <span className="step-sep">→</span>
+              <div className="step-cell">
+                <span className="step-tag">03. AVALANCHE</span>
+                <span className="step-val text-amber">{tamper.hash_mismatch_detected ? "HASH MISMATCH" : "MATCH"}</span>
               </div>
-              <span className="forensic-arrow">▶</span>
-
-              <div className="forensic-step forensic-step--restored">
-                <span className="step-num">04</span>
-                <span className="step-name">STATE RESTORATION</span>
-                <span className="step-flag text-emerald mono">
-                  {tamper.after_restoration ? "RE-ESTABLISHED" : "FAILED"}
-                </span>
+              <span className="step-sep">→</span>
+              <div className="step-cell">
+                <span className="step-tag">04. RECOVERY</span>
+                <span className="step-val text-emerald">{tamper.after_restoration ? "RESTORED" : "FAILED"}</span>
               </div>
             </div>
 
-            {/* Hash Evidence Diff Bar */}
-            <div className="hash-evidence-drawer mono">
-              <div className="evidence-line">
-                <span className="k">ORIGINAL HASH:</span>
-                <span className="v text-cyan">{tamper.original_hash}</span>
+            <div className="hash-diff-strip mono">
+              <div className="hash-row">
+                <span className="hash-k">ORIGINAL HASH:</span>
+                <span className="hash-v text-primary">{tamper.original_hash}</span>
               </div>
-              <div className="evidence-line">
-                <span className="k">TAMPERED HASH:</span>
-                <span className="v text-crimson">{tamper.tampered_calculated_hash}</span>
+              <div className="hash-row">
+                <span className="hash-k">TAMPERED HASH:</span>
+                <span className="hash-v text-crimson">{tamper.tampered_calculated_hash}</span>
               </div>
-              <div className="evidence-line">
-                <span className="k">RESTORED HASH:</span>
-                <span className="v text-emerald">{tamper.restored_hash}</span>
+              <div className="hash-row">
+                <span className="hash-k">RESTORED HASH:</span>
+                <span className="hash-v text-emerald">{tamper.restored_hash}</span>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Continuous Cryptographic Block Tape (Non-card linked ribbon) */}
-      <div className="block-tape-container">
-        <div className="tape-subhead">CRYPTOGRAPHIC BLOCK STREAM & MERKLE LINKAGE</div>
+      {/* Continuous Cryptographic Filmstrip Track */}
+      <div className="filmstrip-track-viewport">
+        <div className="filmstrip-subhead">IMMUTABLE BLOCK CHAIN STREAM</div>
 
-        <div className="block-tape-scroll">
-          {chain.slice().reverse().map((b, idx) => {
+        <div className="timeline-filmstrip-rail">
+          {chain.slice().reverse().map((b) => {
             const isGenesis = b.event === "GENESIS";
             const event = typeof b.event === "object" ? b.event : null;
             const isExpanded = activeBlockIndex === b.index;
-            const dateStr = b.timestamp ? new Date(b.timestamp * 1000).toLocaleTimeString() : "—";
+            const timeStr = b.timestamp ? new Date(b.timestamp * 1000).toLocaleString() : "—";
 
             return (
-              <div key={b.index} className="tape-segment">
-                {/* Hardware Cryptographic Node */}
+              <div key={b.index} className="filmstrip-milestone">
+                {/* Milestone Node on the Track */}
                 <div
-                  className={`tape-node ${isExpanded ? "tape-node--expanded" : ""} ${isGenesis ? "tape-node--genesis" : "tape-node--security"}`}
+                  className={`milestone-bar ${isExpanded ? "milestone-bar--expanded" : ""}`}
                   onClick={() => toggleBlock(b.index)}
                 >
-                  <div className="node-edge-marker">#{b.index}</div>
-
-                  <div className="node-summary">
-                    <div className="node-type">
-                      <span className="type-icon">{isGenesis ? "★" : "🛡"}</span>
-                      <strong className="mono">{isGenesis ? "GENESIS BLOCK" : event?.type || "SECURITY EVENT"}</strong>
-                      {event?.severity && (
-                        <span className={`severity-tag severity-tag--${event.severity.toLowerCase()}`}>
-                          {event.severity}
-                        </span>
-                      )}
-                    </div>
-                    <div className="node-timestamp mono">{dateStr}</div>
+                  <div className="milestone-hub">
+                    <span className="milestone-dot" />
+                    <span className="milestone-idx mono">#{b.index}</span>
                   </div>
 
-                  <div className="node-hash-snippet mono">
+                  <div className="milestone-identity">
+                    <strong>{isGenesis ? "GENESIS BLOCK" : event?.type || "SECURITY EVENT"}</strong>
+                    {event?.severity && (
+                      <span className={`inline-sev-tag inline-sev-tag--${event.severity.toLowerCase()}`}>
+                        {event.severity}
+                      </span>
+                    )}
+                    <span className="milestone-time mono">{timeStr}</span>
+                  </div>
+
+                  <div className="milestone-hash mono">
                     <span className="hash-prefix">HASH:</span>
-                    <span className="hash-val">
-                      {b.hash ? `${b.hash.slice(0, 14)}…${b.hash.slice(-10)}` : "—"}
+                    <span className="hash-string">
+                      {b.hash ? `${b.hash.slice(0, 16)}…${b.hash.slice(-12)}` : "—"}
                     </span>
                   </div>
 
-                  <div className="node-expand-toggle mono">{isExpanded ? "▲ FOLD" : "▼ INSPECT"}</div>
+                  <span className="expand-indicator mono">{isExpanded ? "Fold ▲" : "Inspect ▼"}</span>
                 </div>
 
-                {/* Laser Link to Next Block */}
-                {idx < chain.length - 1 && (
-                  <div className="tape-laser-link">
-                    <span className="laser-beam" />
-                    <span className="laser-particle" />
-                  </div>
-                )}
-
-                {/* Expanded Cryptographic Detail Panel */}
+                {/* Expanded Merkle Cryptographic Trace */}
                 {isExpanded && (
-                  <div className="node-detail-drawer">
-                    <div className="drawer-row mono">
-                      <span className="k">COMPLETE BLOCK HASH:</span>
-                      <span className="v text-cyan">{b.hash}</span>
+                  <div className="milestone-drawer mono">
+                    <div className="drawer-line">
+                      <span className="k">FULL BLOCK HASH:</span>
+                      <span className="v text-primary">{b.hash}</span>
                     </div>
-                    <div className="drawer-row mono">
-                      <span className="k">PREVIOUS BLOCK LINK:</span>
+                    <div className="drawer-line">
+                      <span className="k">PREVIOUS BLOCK HASH:</span>
                       <span className="v text-purple">{b.previous_hash}</span>
                     </div>
 
                     {event && (
-                      <div className="drawer-event-grid mono">
-                        <div className="ev-cell">
-                          <span className="k">SOURCE FLOW:</span>
+                      <div className="drawer-telemetry-strip">
+                        <div className="strip-item">
+                          <span className="k">FLOW:</span>
                           <span className="v">{event.source} → {event.destination} ({event.protocol})</span>
                         </div>
-                        <div className="ev-cell">
-                          <span className="k">QAOA OPTIMIZATION:</span>
+                        <div className="strip-item">
+                          <span className="k">QAOA DECISION:</span>
                           <span className="v text-purple">{event.qaoa_action} (Score: {event.qaoa_score})</span>
                         </div>
-                        <div className="ev-cell">
-                          <span className="k">POST-QUANTUM CIPHER:</span>
-                          <span className="v text-emerald">{event.pqc_algorithm} (NIST Level {event.pqc_nist_level})</span>
+                        <div className="strip-item">
+                          <span className="k">PQC ENCRYPTION:</span>
+                          <span className="v text-emerald">{event.pqc_algorithm} [Level {event.pqc_nist_level}]</span>
                         </div>
-                        <div className="ev-cell">
-                          <span className="k">DISPATCHED MITIGATION:</span>
-                          <span className="v text-cyan">{event.mitigation_action} [{event.mitigation_status}]</span>
+                        <div className="strip-item">
+                          <span className="k">MITIGATION:</span>
+                          <span className="v text-primary">{event.mitigation_action} [{event.mitigation_status}]</span>
                         </div>
                       </div>
                     )}

@@ -53,74 +53,83 @@ export default function NetworkTerminal({ detections }) {
 
   return (
     <div className="network-terminal-station">
-      {/* Terminal Title Bar */}
-      <div className="hud-panel-title">
-        <div className="title-left">
-          <span className="title-icon">⌨</span>
-          <h3>DEEP PACKET TELEMETRY & LIVE CAPTURE STREAM</h3>
+      <div className="section-head">
+        <div className="section-head__title">
+          <span className="section-icon">⌨</span>
+          <div>
+            <h3>LIVE DEEP PACKET TELEMETRY & INGESTION</h3>
+            <p>Real-Time Packet Ingress, Protocol Extraction & Flow Classification Feed</p>
+          </div>
         </div>
-        <span className="stream-badge mono">
-          BUFFER: {filtered.length} / {detections.length} PACKET FLOWS
+        <span className="buffer-counter mono">
+          BUFFER: {filtered.length} OF {detections.length} FLOWS
         </span>
       </div>
 
-      {/* Protocol Distribution Ribbon */}
-      <div className="protocol-spectrum-bar">
-        <div className="spectrum-label mono">PROTOCOL DENSITY:</div>
-        <div className="spectrum-track-multi">
+      {/* Protocol Density Spectrum */}
+      <div className="protocol-bar-strip">
+        <span className="strip-label">PROTOCOL DISTRIBUTION:</span>
+        <div className="multi-spectrum-track">
           {protoStats.map((st, i) => {
-            const colors = ["#00f0ff", "#8a2be2", "#00ff88", "#ffaa00", "#ff3366"];
+            const colors = [
+              "var(--color-primary)",
+              "var(--color-purple)",
+              "var(--color-emerald)",
+              "var(--color-amber)",
+              "var(--color-crimson)"
+            ];
             const color = colors[i % colors.length];
             return (
               <div
                 key={st.name}
-                className="spectrum-seg"
+                className="spectrum-slice"
                 style={{ width: `${st.pct}%`, backgroundColor: color }}
-                title={`${st.name}: ${st.count} (${st.pct.toFixed(1)}%)`}
+                title={`${st.name}: ${st.count} flows (${st.pct.toFixed(1)}%)`}
               />
             );
           })}
         </div>
-        <div className="spectrum-legend mono">
+        <div className="spectrum-legend-chips">
           {protoStats.map((st, i) => {
-            const colors = ["#00f0ff", "#8a2be2", "#00ff88", "#ffaa00", "#ff3366"];
+            const colors = [
+              "var(--color-primary)",
+              "var(--color-purple)",
+              "var(--color-emerald)",
+              "var(--color-amber)",
+              "var(--color-crimson)"
+            ];
             return (
-              <span key={st.name} style={{ color: colors[i % colors.length] }}>
-                ■ {st.name} ({st.pct.toFixed(0)}%)
+              <span key={st.name} className="legend-chip mono">
+                <span className="dot" style={{ backgroundColor: colors[i % colors.length] }} />
+                {st.name} ({st.pct.toFixed(0)}%)
               </span>
             );
           })}
         </div>
       </div>
 
-      {/* Filter Controls Ribbon */}
-      <div className="terminal-filter-ribbon">
-        <div className="search-input-box">
-          <span className="search-prefix mono">&gt; FILTER:</span>
+      {/* Filter and Search Ribbon */}
+      <div className="terminal-filter-bar">
+        <div className="search-field">
+          <span className="search-icon">🔍</span>
           <input
             type="text"
-            className="terminal-input mono"
-            placeholder="Search IP, destination, protocol or severity…"
+            className="search-input mono"
+            placeholder="Filter by IP, destination, protocol or severity…"
             value={filterQuery}
             onChange={(e) => setFilterQuery(e.target.value)}
           />
           {filterQuery && (
-            <button
-              type="button"
-              className="clear-search-btn"
-              onClick={() => setFilterQuery("")}
-            >
-              ✕
-            </button>
+            <button type="button" className="clear-btn" onClick={() => setFilterQuery("")}>✕</button>
           )}
         </div>
 
-        <div className="filter-buttons-group">
+        <div className="filter-pill-group">
           {["ALL", "TCP", "UDP", "SSH", "TLS"].map((proto) => (
             <button
               key={proto}
               type="button"
-              className={`filter-btn ${protocolFilter === proto ? "filter-btn--active" : ""}`}
+              className={`filter-pill ${protocolFilter === proto ? "filter-pill--active" : ""}`}
               onClick={() => {
                 sound.playClick();
                 setProtocolFilter(proto);
@@ -132,31 +141,31 @@ export default function NetworkTerminal({ detections }) {
 
           <button
             type="button"
-            className={`filter-btn filter-btn--threat ${threatsOnly ? "filter-btn--threat-active" : ""}`}
+            className={`filter-pill filter-pill--threat ${threatsOnly ? "filter-pill--threat-active" : ""}`}
             onClick={() => {
               sound.playClick();
               setThreatsOnly(!threatsOnly);
             }}
           >
-            {threatsOnly ? "⚠ THREATS ONLY [ON]" : "THREATS ONLY"}
+            {threatsOnly ? "⚠ Threats Only [On]" : "Threats Only"}
           </button>
         </div>
       </div>
 
-      {/* Terminal Stream Console */}
-      <div className="terminal-log-view">
-        <table className="terminal-table mono">
+      {/* High-Legibility Data Table */}
+      <div className="terminal-table-wrap">
+        <table className="terminal-data-table mono">
           <thead>
             <tr>
               <th>STATUS</th>
               <th>SOURCE</th>
               <th>DIRECTION</th>
               <th>DESTINATION</th>
-              <th>PROTO</th>
+              <th>PROTOCOL</th>
               <th>PORTS</th>
               <th>ATTACK PROB</th>
               <th>SEVERITY</th>
-              <th>ACTION</th>
+              <th>QAOA ACTION</th>
             </tr>
           </thead>
           <tbody>
@@ -169,17 +178,17 @@ export default function NetworkTerminal({ detections }) {
               return (
                 <tr
                   key={i}
-                  className={`terminal-row ${isAtt ? "terminal-row--hostile" : ""} ${isSelected ? "terminal-row--selected" : ""}`}
+                  className={`table-row ${isAtt ? "table-row--threat" : ""} ${isSelected ? "table-row--selected" : ""}`}
                   onClick={() => handleSelectFlow(d)}
                 >
                   <td>
-                    <span className={`status-glyph ${isAtt ? "status-glyph--danger" : "status-glyph--ok"}`}>
-                      {isAtt ? "▲ INTERCEPT" : "● PASS"}
+                    <span className={`status-tag ${isAtt ? "status-tag--danger" : "status-tag--ok"}`}>
+                      {isAtt ? "▲ INTERCEPT" : "● NORMAL"}
                     </span>
                   </td>
-                  <td className="text-cyan">{src || "127.0.0.1"}</td>
+                  <td className="text-primary font-bold">{src || "127.0.0.1"}</td>
                   <td className="text-dim">→</td>
-                  <td className="text-white">{dst || "10.0.0.1"}</td>
+                  <td>{dst || "10.0.0.1"}</td>
                   <td className="text-purple">{proto || "TCP"}</td>
                   <td className="text-dim">{sport ?? 0} : {dport ?? 0}</td>
                   <td>
@@ -188,7 +197,7 @@ export default function NetworkTerminal({ detections }) {
                     </span>
                   </td>
                   <td>
-                    <span className={`badge-pill badge-pill--${(d.severity || "BENIGN").toLowerCase()}`}>
+                    <span className={`severity-chip severity-chip--${(d.severity || "BENIGN").toLowerCase()}`}>
                       {d.severity || (isAtt ? "HIGH" : "BENIGN")}
                     </span>
                   </td>
@@ -202,53 +211,47 @@ export default function NetworkTerminal({ detections }) {
         </table>
 
         {filtered.length === 0 && (
-          <div className="terminal-empty mono">
-            [SYS-MSG] No telemetry frames matching query. Try resetting filters.
+          <div className="table-empty mono">
+            No telemetry records matching current filter parameters.
           </div>
         )}
       </div>
 
-      {/* Flow Inspection Drawer */}
+      {/* Selected Flow Inspection Drawer */}
       {selectedFlow && (
-        <div className="flow-inspect-panel mono">
-          <div className="inspect-head">
-            <span className="inspect-title text-cyan">
-              [INSPECT FRAME] {selectedFlow.flow?.[0]}:{selectedFlow.flow?.[2]} → {selectedFlow.flow?.[1]}:{selectedFlow.flow?.[3]}
+        <div className="flow-inspector-drawer mono">
+          <div className="drawer-top">
+            <span className="drawer-title text-primary">
+              [FLOW INSPECTION] {selectedFlow.flow?.[0]}:{selectedFlow.flow?.[2]} → {selectedFlow.flow?.[1]}:{selectedFlow.flow?.[3]}
             </span>
-            <button
-              type="button"
-              className="close-drawer-btn"
-              onClick={() => setSelectedFlow(null)}
-            >
-              ✕
-            </button>
+            <button type="button" className="close-btn" onClick={() => setSelectedFlow(null)}>✕</button>
           </div>
 
-          <div className="inspect-grid">
-            <div className="inspect-cell">
-              <span className="k">CLASSIFICATION:</span>
-              <span className={selectedFlow.result?.prediction === 1 ? "text-crimson" : "text-emerald"}>
-                {selectedFlow.result?.prediction === 1 ? "MALICIOUS ATTACK INTRUSION" : "NORMAL BENIGN TRAFFIC"}
+          <div className="drawer-grid">
+            <div className="drawer-card">
+              <span className="k">CLASSIFICATION VERDICT:</span>
+              <span className={selectedFlow.result?.prediction === 1 ? "text-crimson font-bold" : "text-emerald font-bold"}>
+                {selectedFlow.result?.prediction === 1 ? "MALICIOUS INTRUSION" : "NORMAL BENIGN TRAFFIC"}
               </span>
             </div>
-            <div className="inspect-cell">
-              <span className="k">BENIGN PROBABILITY:</span>
-              <span className="text-cyan">
-                {selectedFlow.result?.probability_benign != null
-                  ? `${(selectedFlow.result.probability_benign * 100).toFixed(1)}%`
-                  : "—"}
-              </span>
-            </div>
-            <div className="inspect-cell">
+            <div className="drawer-card">
               <span className="k">ATTACK PROBABILITY:</span>
-              <span className="text-crimson">
+              <span className="text-crimson font-bold">
                 {selectedFlow.result?.probability_attack != null
-                  ? `${(selectedFlow.result.probability_attack * 100).toFixed(1)}%`
+                  ? `${(selectedFlow.result.probability_attack * 100).toFixed(2)}%`
                   : "—"}
               </span>
             </div>
-            <div className="inspect-cell">
-              <span className="k">DISPATCHED QAOA ACTION:</span>
+            <div className="drawer-card">
+              <span className="k">BENIGN PROBABILITY:</span>
+              <span className="text-primary font-bold">
+                {selectedFlow.result?.probability_benign != null
+                  ? `${(selectedFlow.result.probability_benign * 100).toFixed(2)}%`
+                  : "—"}
+              </span>
+            </div>
+            <div className="drawer-card">
+              <span className="k">QAOA OPTIMIZED ACTION:</span>
               <span className="text-purple font-bold">
                 {selectedFlow.response?.action || "BLOCK_SOURCE"}
               </span>

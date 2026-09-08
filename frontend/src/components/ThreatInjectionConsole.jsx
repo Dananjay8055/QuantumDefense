@@ -1,245 +1,200 @@
 import React, { useState } from "react";
 import { sound } from "../utils/audio";
 
-const SEVERITY_LEVELS = [
+const SEVERITY_STEPS = [
   {
     id: "LOW",
-    title: "RECONNAISSANCE PROBE",
+    label: "LOW (Reconnaissance)",
     prob: 55,
-    color: "#00f0ff",
-    desc: "Unusual TCP SYN flag anomalies detected on external gateway."
+    color: "var(--color-primary)",
+    desc: "Perimeter ping sweep and non-destructive port identification."
   },
   {
     id: "MEDIUM",
-    title: "PORT SCAN & ENUMERATION",
+    label: "MEDIUM (Port Scanning)",
     prob: 70,
-    color: "#ffaa00",
-    desc: "Rapid sequential port probing against internal web daemon."
+    color: "var(--color-amber)",
+    desc: "Sequential service probing attempting vulnerability identification."
   },
   {
     id: "HIGH",
-    title: "LATERAL EXFILTRATION",
+    label: "HIGH (Lateral Infiltration)",
     prob: 85,
-    color: "#ff6600",
-    desc: "Unauthorized privilege escalation and encrypted payload staging."
+    color: "#ea580c",
+    desc: "Anomalous lateral transit with privilege escalation payload."
   },
   {
     id: "CRITICAL",
-    title: "QUANTUM ZERO-DAY BREACH",
+    label: "CRITICAL (Zero-Day Breach)",
     prob: 98,
-    color: "#ff3366",
-    desc: "Distributed Shor/Grover key-derivation attack attempting bypass."
+    color: "var(--color-crimson)",
+    desc: "Coordinated quantum-assisted key extraction attack attempting firewall bypass."
   }
 ];
 
 const ACTIONS = [
-  { key: "MONITOR", desc: "Passive packet logging & telemetry retention" },
-  { key: "RATE_LIMIT", desc: "Dynamic bandwidth throttling on offending IP" },
-  { key: "BLOCK_SOURCE", desc: "PQC-authenticated drop rule applied to edge firewall" },
-  { key: "ISOLATE_HOST", desc: "Quarantine affected host into micro-segmented zero-trust VLAN" }
+  { key: "MONITOR", label: "Passive Monitoring", desc: "Flag packet and continue telemetry observation." },
+  { key: "RATE_LIMIT", label: "Rate Limiting", desc: "Dynamic ingress bandwidth throttling on suspect subnet." },
+  { key: "BLOCK_SOURCE", label: "Firewall Drop Rule", desc: "Drop all packets via post-quantum authenticated RPC." },
+  { key: "ISOLATE_HOST", label: "VLAN Quarantine", desc: "Quarantine target machine into isolated zero-trust VLAN." }
 ];
 
-export default function ThreatInjectionConsole({ latestSimulated, running, onRunAttack, pqc, blockchain }) {
-  const [selectedSeverity, setSelectedSeverity] = useState("HIGH");
+export default function ThreatInjectionConsole({
+  latestSimulated,
+  running,
+  onRunAttack,
+  pqc,
+  blockchain
+}) {
+  const [severityIndex, setSeverityIndex] = useState(2); // default: HIGH (index 2)
 
-  const currentProfile = SEVERITY_LEVELS.find((s) => s.id === selectedSeverity) || SEVERITY_LEVELS[2];
+  const currentProfile = SEVERITY_STEPS[severityIndex];
   const response = latestSimulated?.response;
   const scores = response?.response_scores || {
     MONITOR: 0.12,
     RATE_LIMIT: 0.48,
-    BLOCK_SOURCE: 0.91,
+    BLOCK_SOURCE: 0.912,
     ISOLATE_HOST: 0.76
   };
   const maxScore = Math.max(1, ...Object.values(scores).filter((v) => typeof v === "number"));
 
+  const handleSliderChange = (e) => {
+    const val = parseInt(e.target.value, 10);
+    setSeverityIndex(val);
+    sound.playClick();
+  };
+
   const handleTrigger = () => {
     sound.playAlert();
-    onRunAttack(selectedSeverity);
+    onRunAttack(currentProfile.id);
   };
 
   return (
-    <div className="threat-console-station">
-      {/* Console Header */}
-      <div className="hud-panel-title">
-        <span className="title-icon">⚡</span>
-        <h3>AUTONOMOUS DEFENSE & THREAT SIMULATION ACTUATOR</h3>
-        <span className="pqc-status-pill">
-          {running ? "PROCESSING DEFENSE SEQUENCE…" : "READY FOR INJECTION"}
-        </span>
+    <div className="threat-linear-actuator-station">
+      <div className="station-horizon-bar">
+        <div className="horizon-left">
+          <span className="horizon-icon">⚡</span>
+          <div>
+            <h3 className="horizon-title">AUTONOMOUS THREAT INJECTION & QAOA ACTUATION</h3>
+            <p className="horizon-sub">Inject Controlled Cyber Range Scenarios to Trigger Quantum Defense Sequence</p>
+          </div>
+        </div>
+
+        <div className="horizon-right">
+          <span className="status-pill status-pill--active">
+            {running ? `EXECUTING ${currentProfile.id}…` : "ACTUATOR ARMED"}
+          </span>
+        </div>
       </div>
 
-      <div className="threat-actuator-grid">
-        {/* Severity Selector Throttle */}
-        <div className="threat-throttle-column">
-          <div className="column-subhead">1. SELECT THREAT VAPOR SIGNATURE</div>
-          <div className="throttle-selector">
-            {SEVERITY_LEVELS.map((lvl) => {
-              const active = selectedSeverity === lvl.id;
-              return (
-                <button
-                  key={lvl.id}
-                  type="button"
-                  className={`throttle-notch ${active ? "throttle-notch--active" : ""}`}
-                  style={{
-                    borderColor: active ? lvl.color : "rgba(0, 240, 255, 0.15)",
-                    boxShadow: active ? `0 0 15px ${lvl.color}40` : "none"
-                  }}
+      <div className="linear-actuator-workbench">
+        {/* Left: Continuous Threat Slider Strip */}
+        <div className="slider-control-rail">
+          <div className="rail-subhead">
+            <span>1. CONTINUOUS THREAT INTENSITY CONTROLLER</span>
+            <span className="prob-display mono" style={{ color: currentProfile.color }}>
+              PROBABILITY: {currentProfile.prob}% ATTACK
+            </span>
+          </div>
+
+          {/* Stepped Range Slider */}
+          <div className="range-track-container">
+            <input
+              type="range"
+              min="0"
+              max="3"
+              step="1"
+              value={severityIndex}
+              onChange={handleSliderChange}
+              className="threat-linear-slider"
+              style={{ "--slider-accent": currentProfile.color }}
+            />
+            <div className="slider-notches-row mono">
+              {SEVERITY_STEPS.map((step, idx) => (
+                <span
+                  key={step.id}
+                  className={`notch-label ${idx === severityIndex ? "notch-label--active" : ""}`}
                   onClick={() => {
+                    setSeverityIndex(idx);
                     sound.playClick();
-                    setSelectedSeverity(lvl.id);
                   }}
+                  style={{ color: idx === severityIndex ? step.color : undefined }}
                 >
-                  <div className="throttle-indicator" style={{ backgroundColor: lvl.color }} />
-                  <div className="throttle-info">
-                    <div className="throttle-name" style={{ color: active ? lvl.color : "#c0d4f0" }}>
-                      {lvl.id} : {lvl.title}
-                    </div>
-                    <div className="throttle-prob mono">
-                      ATTACK PROBABILITY: {lvl.prob}%
-                    </div>
-                  </div>
-                  <span className="notch-chevron">{active ? "◀" : "▷"}</span>
-                </button>
-              );
-            })}
+                  {step.id}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Selected Threat Scenario Description (No cards, clean inline strip) */}
+          <div className="scenario-detail-strip">
+            <div className="scenario-title" style={{ color: currentProfile.color }}>
+              {currentProfile.label}
+            </div>
+            <div className="scenario-desc">{currentProfile.desc}</div>
           </div>
 
           <button
             type="button"
-            className={`tactical-fire-button ${running ? "tactical-fire-button--firing" : ""}`}
+            className={`linear-fire-btn ${running ? "linear-fire-btn--running" : ""}`}
             onClick={handleTrigger}
             disabled={!!running}
           >
-            <span className="fire-icon">⏣</span>
-            <span className="fire-text">
-              {running ? `ORCHESTRATING DEFENSE: ${running}…` : `EXECUTE THREAT RESPONSE: ${selectedSeverity}`}
+            <span className="btn-icon">⚡</span>
+            <span>
+              {running ? `PROCESSING ${currentProfile.id} DEFENSE PIPELINE…` : `EXECUTE DEFENSE SEQUENCE: ${currentProfile.id}`}
             </span>
-            <span className="fire-laser" />
           </button>
         </div>
 
-        {/* Real-Time Photonic Defense Mitigation Conduit */}
-        <div className="defense-conduit-column">
-          <div className="column-subhead">2. CONTINUOUS DEFENSE SIGNAL PROPAGATION</div>
-
-          <div className="defense-photonic-bus">
-            {/* Stage 1: AI Ingestion */}
-            <div className="photonic-node photonic-node--ai">
-              <div className="node-marker">01</div>
-              <div className="node-content">
-                <span className="node-title">RF DETECTOR</span>
-                <span className="node-metric text-cyan">
-                  {latestSimulated?.result?.probability_attack
-                    ? `${(latestSimulated.result.probability_attack * 100).toFixed(1)}% ATTACK`
-                    : `${currentProfile.prob}% SIMULATED`}
-                </span>
-                <small className="node-sub">CICIDS2017 Classifier</small>
-              </div>
-            </div>
-
-            <div className="photonic-link">
-              <span className="link-beam" />
-              <span className="link-arrow">▶</span>
-            </div>
-
-            {/* Stage 2: QAOA Optimizer */}
-            <div className="photonic-node photonic-node--qaoa">
-              <div className="node-marker">02</div>
-              <div className="node-content">
-                <span className="node-title">QAOA OPTIMIZER</span>
-                <span className="node-metric text-purple">
-                  {response?.action || "BLOCK_SOURCE"}
-                </span>
-                <small className="node-sub">Score: {response?.score ? response.score.toFixed(3) : "0.912"}</small>
-              </div>
-            </div>
-
-            <div className="photonic-link">
-              <span className="link-beam" />
-              <span className="link-arrow">▶</span>
-            </div>
-
-            {/* Stage 3: PQC Shield */}
-            <div className="photonic-node photonic-node--pqc">
-              <div className="node-marker">03</div>
-              <div className="node-content">
-                <span className="node-title">ML-KEM-768 PQC</span>
-                <span className="node-metric text-emerald">
-                  {latestSimulated?.pqc?.algorithm || pqc?.result?.algorithm || "ML-KEM-768"}
-                </span>
-                <small className="node-sub">Lattice Secret Match: ✓</small>
-              </div>
-            </div>
-
-            <div className="photonic-link">
-              <span className="link-beam" />
-              <span className="link-arrow">▶</span>
-            </div>
-
-            {/* Stage 4: Immutable Ledger */}
-            <div className="photonic-node photonic-node--blockchain">
-              <div className="node-marker">04</div>
-              <div className="node-content">
-                <span className="node-title">AUDIT LEDGER</span>
-                <span className="node-metric text-amber">
-                  {blockchain?.valid ? `BLOCK #${Math.max(0, (blockchain.length || 1) - 1)}` : "IMMUTABLE"}
-                </span>
-                <small className="node-sub">SHA-256 Validated</small>
-              </div>
-            </div>
+        {/* Right: QAOA Optimization Spectrum & Mitigation (Borderless integrated layout) */}
+        <div className="qaoa-spectrum-rail">
+          <div className="rail-subhead">
+            <span>2. QAOA HAMILTONIAN OPTIMIZATION SPECTRUM</span>
+            <span className="mono text-purple">
+              OPTIMAL ACTION: <b>{response?.action || "BLOCK_SOURCE"}</b>
+            </span>
           </div>
 
-          {/* QAOA Quantum Hamiltonian Energy & Response Bar Graph */}
-          <div className="qaoa-spectrum-station">
-            <div className="spectrum-header">
-              <div className="spectrum-title">
-                <span>QAOA HAMILTONIAN OPTIMIZATION LANDSCAPE</span>
-                <small className="mono">
-                  Quantum State: [{(response?.variables || [0, 0, 1, 0]).join(", ")}]
-                </small>
-              </div>
-              <div className="spectrum-badge">
-                <span className="mono text-emerald">
-                  {response?.qaoa_matches_classical ? "✓ MATCHES CLASSICAL OPTIMUM" : "EQUIVALENT OPTIMUM"}
-                </span>
-              </div>
-            </div>
+          <div className="spectrum-action-bars">
+            {ACTIONS.map((act) => {
+              const isChosen = (response?.action || "BLOCK_SOURCE") === act.key;
+              const scoreVal = typeof scores[act.key] === "number" ? scores[act.key] : 0.2;
+              const widthPct = Math.max(10, (scoreVal / maxScore) * 100);
 
-            <div className="qaoa-bars-spectrum">
-              {ACTIONS.map((act) => {
-                const isSelected = (response?.action || "BLOCK_SOURCE") === act.key;
-                const scoreVal = typeof scores[act.key] === "number" ? scores[act.key] : 0.2;
-                const pctWidth = Math.max(8, (scoreVal / maxScore) * 100);
+              return (
+                <div key={act.key} className={`linear-action-row ${isChosen ? "linear-action-row--chosen" : ""}`}>
+                  <div className="action-row-left">
+                    <span className="action-key mono">{act.key}</span>
+                    <span className="action-sub">{act.label}</span>
+                    {isChosen && <span className="optimal-flag">QAOA OPTIMAL</span>}
+                  </div>
 
-                return (
-                  <div key={act.key} className={`spectrum-row ${isSelected ? "spectrum-row--selected" : ""}`}>
-                    <div className="spectrum-label-box">
-                      <span className="act-name mono">{act.key}</span>
-                      {isSelected && <span className="selected-tag">CHOSEN RESPONSE</span>}
-                    </div>
-                    <div className="spectrum-track">
+                  <div className="action-row-right">
+                    <div className="action-bar-track">
                       <div
-                        className="spectrum-fill"
+                        className="action-bar-gauge"
                         style={{
-                          width: `${pctWidth}%`,
-                          backgroundColor: isSelected ? "#00f0ff" : "rgba(138, 43, 226, 0.45)"
+                          width: `${widthPct}%`,
+                          backgroundColor: isChosen ? "var(--color-primary)" : "var(--color-purple)"
                         }}
                       />
                     </div>
-                    <span className="spectrum-val mono">{scoreVal.toFixed(3)}</span>
+                    <span className="action-score-val mono">{scoreVal.toFixed(3)}</span>
                   </div>
-                );
-              })}
-            </div>
-
-            {latestSimulated?.mitigation && (
-              <div className="mitigation-feed-ribbon mono">
-                <span className="tag text-purple">EXECUTED MITIGATION:</span>
-                <span className="desc">{latestSimulated.mitigation.message}</span>
-                <span className="status text-emerald">[{latestSimulated.mitigation.status}]</span>
-              </div>
-            )}
+                </div>
+              );
+            })}
           </div>
+
+          {/* Live Executed Mitigation Banner */}
+          {latestSimulated?.mitigation && (
+            <div className="linear-mitigation-banner mono">
+              <span className="mitigation-flag text-emerald">MITIGATION DISPATCHED:</span>
+              <span className="mitigation-msg">{latestSimulated.mitigation.message}</span>
+              <span className="mitigation-status text-primary">[{latestSimulated.mitigation.status}]</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

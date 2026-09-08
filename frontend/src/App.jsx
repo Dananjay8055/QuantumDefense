@@ -8,7 +8,7 @@ import {
   MOCK_CIRCUIT
 } from "./services/mockData";
 import TacticalHUDHeader from "./components/TacticalHUDHeader";
-import QuantumRadar from "./components/QuantumRadar";
+import DefenseHighway from "./components/DefenseHighway";
 import ThreatInjectionConsole from "./components/ThreatInjectionConsole";
 import QuantumCircuitVisualizer from "./components/QuantumCircuitVisualizer";
 import BlockchainStream from "./components/BlockchainStream";
@@ -19,10 +19,32 @@ import "./App.css";
 const POLL_MS = 4000;
 
 export default function App() {
-  const [activeView, setActiveView] = useState("radar");
+  const [activeView, setActiveView] = useState("highway");
   const [muted, setMuted] = useState(false);
 
-  // Backend state with high-fidelity fallbacks
+  // Theme Management (Light & Dark mode)
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem("qd_theme") || "dark";
+    } catch {
+      return "dark";
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      localStorage.setItem("qd_theme", theme);
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
+  const handleToggleTheme = (newTheme) => {
+    setTheme(newTheme);
+  };
+
+  // State with high-fidelity fallbacks
   const [detections, setDetections] = useState(MOCK_DETECTIONS);
   const [blockchain, setBlockchain] = useState(MOCK_BLOCKCHAIN);
   const [pqc, setPqc] = useState(MOCK_PQC);
@@ -198,7 +220,7 @@ export default function App() {
             source: "INTRUSION-VECTOR",
             destination: "10.0.0.1",
             status: "EXECUTED",
-            message: `Mitigation protocol invoked for ${severity} event.`
+            message: `Mitigation rule applied via Post-Quantum RPC: ${action}`
           },
           pqc: {
             algorithm: "ML-KEM-768",
@@ -299,12 +321,8 @@ export default function App() {
   };
 
   return (
-    <div className="quantum-defense-app">
-      {/* Background Cybernetic Grid & Scanning Particle Conduits */}
-      <div className="tactical-bg-grid" />
-      <div className="tactical-scanline" />
-
-      {/* Top Tactical Command HUD Header */}
+    <div className="command-app-root">
+      {/* Upper Navigation and Telemetry Header */}
       <TacticalHUDHeader
         activeView={activeView}
         onSelectView={setActiveView}
@@ -317,20 +335,25 @@ export default function App() {
         qaoaCount={qaoaDecisionsCount}
         muted={muted}
         onToggleMute={handleToggleMute}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
-      {/* Main Tactical Viewport Content */}
-      <main className="tactical-viewport">
-        {activeView === "radar" && (
-          <div className="viewport-grid viewport-grid--soc">
-            {/* Integrated Defense Radar */}
-            <QuantumRadar
+      {/* Main Viewport Content Area */}
+      <main className="command-viewport">
+        {activeView === "highway" && (
+          <div className="view-stack">
+            {/* Interactive Autonomous Defense Highway */}
+            <DefenseHighway
               detections={detections}
               latestSimulated={latestSimulated}
               latestLive={latestLive}
+              pqc={pqc}
+              blockchain={blockchain}
+              running={runningAttack}
             />
 
-            {/* Continuous Threat Injection & Mitigation Conduits */}
+            {/* Actuator & Threat Injection Controls */}
             <ThreatInjectionConsole
               latestSimulated={latestSimulated}
               running={runningAttack}
@@ -342,13 +365,13 @@ export default function App() {
         )}
 
         {activeView === "quantum" && (
-          <div className="viewport-grid viewport-grid--quantum">
+          <div className="view-stack">
             <QuantumCircuitVisualizer qsvc={qsvc} circuit={circuit} />
           </div>
         )}
 
         {activeView === "ledger" && (
-          <div className="viewport-grid viewport-grid--ledger">
+          <div className="view-stack">
             <BlockchainStream
               blockchain={blockchain}
               latestSimulated={latestSimulated}
@@ -360,26 +383,26 @@ export default function App() {
         )}
 
         {activeView === "telemetry" && (
-          <div className="viewport-grid viewport-grid--telemetry">
+          <div className="view-stack">
             <NetworkTerminal detections={detections} />
           </div>
         )}
       </main>
 
-      {/* Continuous Bottom Telemetry Bus */}
-      <footer className="tactical-footer-conduit mono">
-        <div className="footer-seg">
-          <span className="dot dot--cyan" />
-          <span>STATUS: AUTONOMOUS INTERCEPTION ACTIVE</span>
+      {/* Bottom Global Status Footer Bar */}
+      <footer className="command-footer mono">
+        <div className="footer-item">
+          <span className="footer-status-indicator" />
+          <span>AUTONOMOUS CYBER DEFENCE ACTIVE</span>
         </div>
-        <div className="footer-seg">
-          <span>ALGORITHM STACK: RF + QAOA (4Q) + ML-KEM-768 + SHA-256</span>
+        <div className="footer-item">
+          <span>ALGORITHM STACK: RF + QAOA (4-QUBIT) + ML-KEM-768 + SHA-256</span>
         </div>
-        <div className="footer-seg">
+        <div className="footer-item">
           <span>POLLING CYCLE: {POLL_MS / 1000}s</span>
         </div>
-        <div className="footer-seg footer-seg--right">
-          <span>Q-BRIDGE // SECURE SEC-01</span>
+        <div className="footer-item footer-item--right">
+          <span>QUANTUM DEFENSE COMMAND // SEC-01</span>
         </div>
       </footer>
     </div>
