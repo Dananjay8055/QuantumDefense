@@ -14,92 +14,81 @@ def blockchain():
     })
 
 
-# ============================================================
-# BLOCKCHAIN TAMPER DETECTION DEMO
-# ============================================================
-
 @api.route("/api/blockchain/tamper-test", methods=["POST"])
 def blockchain_tamper_test():
 
     chain = audit_blockchain.get_chain()
 
-    # Need at least genesis + one security block.
+    # Need Genesis Block + at least one security block
     if len(chain) < 2:
         return jsonify({
             "status": "ERROR",
             "message": "Create at least one security event first."
         }), 400
 
-    # --------------------------------------------------------
-    # 1. Select block to test
-    # --------------------------------------------------------
-
-    target_block = chain[1]
-
-    block_index = target_block["index"]
-
-    # --------------------------------------------------------
-    # 2. Verify original chain
-    # --------------------------------------------------------
+    # ========================================================
+    # 1. ORIGINAL STATE
+    # ========================================================
 
     original_valid = audit_blockchain.verify_chain()
 
-    original_hash = target_block["hash"]
-
-    original_calculated_hash = (
-        audit_blockchain.calculate_block_hash(
-            target_block
-        )
-    )
-
-    # --------------------------------------------------------
-    # 3. Save original event data
-    # --------------------------------------------------------
+    target_block = chain[-1]
 
     original_event = target_block["event"]
 
     if isinstance(original_event, dict):
-
-        original_severity = original_event.get("severity")
-
-        # Temporarily modify the event.
-        original_event["severity"] = "TAMPERED"
-
+        original_event_copy = original_event.copy()
     else:
+        original_event_copy = original_event
 
-        original_severity = None
+    original_hash = target_block["hash"]
 
-        # Temporarily replace the event.
-        target_block["event"] = "TAMPERED"
+    # Calculate the original hash from block contents
+    original_block_for_hash = target_block.copy()
+    del original_block_for_hash["hash"]
 
-    # --------------------------------------------------------
-    # 4. Calculate hash AFTER tampering
-    # --------------------------------------------------------
-
-    tampered_calculated_hash = (
-        audit_blockchain.calculate_block_hash(
-            target_block
+    original_calculated_hash = (
+        audit_blockchain._calculate_hash(
+            original_block_for_hash
         )
     )
 
-    # The stored hash has NOT been changed.
+    # ========================================================
+    # 2. TAMPER WITH BLOCK
+    # ========================================================
+
+    if isinstance(target_block["event"], dict):
+
+        target_block["event"]["severity"] = "TAMPERED"
+
+    else:
+
+        target_block["event"] = "TAMPERED"
+
+    # ========================================================
+    # 3. CALCULATE NEW HASH
+    # ========================================================
+
+    tampered_block_for_hash = target_block.copy()
+    del tampered_block_for_hash["hash"]
+
+    tampered_calculated_hash = (
+        audit_blockchain._calculate_hash(
+            tampered_block_for_hash
+        )
+    )
+
+    # Stored hash remains the ORIGINAL hash
     stored_hash_after_tampering = target_block["hash"]
 
-    # --------------------------------------------------------
-    # 5. Verify chain after tampering
-    # --------------------------------------------------------
-
+    # Verify modified chain
     tampered_valid = audit_blockchain.verify_chain()
-
-    # --------------------------------------------------------
-    # 6. Determine whether tampering was detected
-    # --------------------------------------------------------
 
     hash_changed = (
         original_hash != tampered_calculated_hash
     )
 
-    hash_mismatch = (
+    hash_mismatch_detected = (
         stored_hash_after_tampering
         != tampered_calculated_hash
     )
@@ -107,36 +96,46 @@ def blockchain_tamper_test():
     tampering_detected = (
         original_valid
         and not tampered_valid
-        and hash_mismatch
+        and hash_mismatch_detected
     )
 
-    # --------------------------------------------------------
-    # 7. Restore original event
-    # --------------------------------------------------------
+    # ========================================================
+    # 4. RESTORE ORIGINAL EVENT
+    # ========================================================
 
-    if isinstance(original_event, dict):
+    if isinstance(original_event_copy, dict):
 
-        original_event["severity"] = original_severity
+        target_block["event"] = original_event_copy.copy()
 
     else:
 
-        target_block["event"] = original_event
+        target_block["event"] = original_event_copy
 
-    # --------------------------------------------------------
-    # 8. Verify restored chain
-    # --------------------------------------------------------
+    # ========================================================
+    # 5. VERIFY RESTORED STATE
+    # ========================================================
 
-    restored_valid = audit_blockchain.verify_chain()
+    restored_block_for_hash = target_block.copy()
+    del restored_block_for_hash["hash"]
+
+    restored_calculated_hash = (
+        audit_blockchain._calculate_hash(
+            restored_block_for_hash
+        )
+    )
 
     restored_hash = target_block["hash"]
 
+    restored_valid = audit_blockchain.verify_chain()
+
     hash_restored = (
-        original_hash == restored_hash
+        restored_hash == original_hash
+        and restored_calculated_hash == original_hash
     )
 
-    # --------------------------------------------------------
-    # 9. Return detailed result
-    # --------------------------------------------------------
+    # ========================================================
+    # 6. RETURN REAL HASH VALUES
+    # ========================================================
 
     return jsonify({
 
@@ -144,7 +143,6 @@ def blockchain_tamper_test():
 
         "tamper_detection": {
 
-            # Basic verification
             "original_chain_valid":
                 original_valid,
 
@@ -157,20 +155,25 @@ def blockchain_tamper_test():
             "after_restoration":
                 restored_valid,
 
-            # Block information
             "tested_block_index":
-                block_index,
+                target_block["index"],
 
             "tampered_field":
                 "event.severity",
 
             "original_value":
-                original_severity,
+                (
+                    original_event_copy.get("severity")
+                    if isinstance(
+                        original_event_copy,
+                        dict
+                    )
+                    else original_event_copy
+                ),
 
             "tampered_value":
                 "TAMPERED",
 
-            # Hash evidence
             "original_hash":
                 original_hash,
 
@@ -186,12 +189,14 @@ def blockchain_tamper_test():
             "restored_hash":
                 restored_hash,
 
-            # Hash verification
+            "restored_calculated_hash":
+                restored_calculated_hash,
+
             "hash_changed":
                 hash_changed,
 
             "hash_mismatch_detected":
-                hash_mismatch,
+                hash_mismatch_detected,
 
             "hash_restored":
                 hash_restored

@@ -273,45 +273,40 @@ export default function App() {
   };
 
   // Run Tamper Detection Test
+  // Run Tamper Detection Test
+  // Run Tamper Detection Test
   const handleRunTamper = async () => {
     setTamperRunning(true);
+
     try {
-      const r = await api.post("/api/blockchain/tamper-test");
+      const r = await api.post(
+        "/api/blockchain/tamper-test"
+      );
+
+      console.log(
+        "REAL TAMPER TEST RESPONSE:",
+        r.data
+      );
+
       setTamperResult(r.data);
+
       await fetchBlockchain();
+
       sound.playSuccess();
-    } catch {
-      // Fallback offline tamper test
-      setTimeout(() => {
-        const testBlock = blockchain?.chain?.[1] || {
-          hash: "3b2e7a199f57d6e42b10c9a4e8d35688a2ef4901b0f19c34d8e57620bcfa7812"
-        };
-        setTamperResult({
-          status: "SUCCESS",
-          tamper_detection: {
-            original_chain_valid: true,
-            after_tampering: false,
-            tampering_detected: true,
-            after_restoration: true,
-            tested_block_index: 1,
-            tampered_field: "event.severity",
-            original_value: "HIGH",
-            tampered_value: "TAMPERED",
-            original_hash: testBlock.hash,
-            original_calculated_hash: testBlock.hash,
-            tampered_calculated_hash: "9f8a3d120c45bb89ef01a44e99cd881267ea0204bca908234ffea11094ba8123",
-            stored_hash_after_tampering: testBlock.hash,
-            restored_hash: testBlock.hash,
-            hash_changed: true,
-            hash_mismatch_detected: true,
-            hash_restored: true
-          },
-          message: "Blockchain tamper detection test completed."
-        });
-        sound.playSuccess();
-      }, 600);
+
+    } catch (error) {
+
+      console.error(
+        "Blockchain tamper test failed:",
+        error
+      );
+
+      setTamperResult(null);
+
     } finally {
+
       setTamperRunning(false);
+
     }
   };
 
