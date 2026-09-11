@@ -251,9 +251,18 @@ export default function NetworkTerminal({ detections }) {
               </span>
             </div>
             <div className="drawer-card">
-              <span className="k">QAOA OPTIMIZED ACTION:</span>
+              <span className="k">
+                {selectedFlow.response?.action
+                  ? "QAOA OPTIMIZED ACTION:"
+                  : "RESPONSE ACTION:"}
+              </span>
+
               <span className="text-purple font-bold">
-                {selectedFlow.response?.action || "BLOCK_SOURCE"}
+                {selectedFlow.response?.action
+                  ? selectedFlow.response.action
+                  : selectedFlow.result?.prediction === 1
+                    ? "ALERT"
+                    : "PASS"}
               </span>
             </div>
           </div>
